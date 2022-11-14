@@ -4,7 +4,7 @@ const logger = require("morgan");
 const express = require("express");
 
 const signupRouter = require("./routes/signup");
-const usersRouter = require("./routes/users");
+const otpRouter = require("./routes/otp");
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/signup", signupRouter);
-app.use("/users", usersRouter);
+app.use("/otp", otpRouter);
 
 app.use(function (req, res, next) {
   const error = new Error("Not Found");

@@ -7,10 +7,12 @@
     "dev": "NODE_ENV=development nodemon ./bin/www"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "node-mailjet": "^3.3.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"

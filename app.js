@@ -1,18 +1,20 @@
 const path = require("path");
+const cors = require("cors");
 const logger = require("morgan");
 const express = require("express");
 
-const indexRouter = require("./routes/index");
+const signupRouter = require("./routes/signup");
 const usersRouter = require("./routes/users");
 
 const app = express();
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
+app.use("/signup", signupRouter);
 app.use("/users", usersRouter);
 
 app.use(function (req, res, next) {

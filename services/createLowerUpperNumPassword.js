@@ -1,4 +1,4 @@
-function createRandomString(length) {
+function createLowerUpperNumPassword(length) {
   let randomString = "";
   const characters =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -13,4 +13,4 @@ function createRandomString(length) {
   return randomString;
 }
 
-module.exports = createRandomString;
+module.exports = createLowerUpperNumPassword;

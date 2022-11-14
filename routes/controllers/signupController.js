@@ -1,5 +1,5 @@
 const sendEmail = require("../../utils/sendEmail");
-const createRandomString = require("../../utils/createRandomString");
+const createLowerUpperNumPassword = require("../../services/createLowerUpperNumPassword");
 
 const ERROR = require("../../constants/error");
 
@@ -9,9 +9,9 @@ module.exports = {
 
     // email 형식, 중복 확인에 따른 res 전달
 
-    const randomString = createRandomString(6);
+    const randomString = createLowerUpperNumPassword(6);
     const emailTitle = "Verify your Email";
-    const emailBody = `<h2>Thank you for signing up!</h2><br />To activate your account, please fill in the Confirmation Code below to verify your email address.<br /><h3>Confirmation Code: ${randomString}</h3>Best Regards,<br />One Pass Team`;
+    const emailBody = `<h2>Thank you for signing up!</h2><br /><h3>To activate your account, please fill in the Confirmation Code below to verify your email address.</h3><h2>Confirmation Code: ${randomString}</h2><br /><h3>Best Regards,</h3><h3>One Pass Team</h3>`;
 
     try {
       await sendEmail(email, emailTitle, emailBody);

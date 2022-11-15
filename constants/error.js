@@ -5,9 +5,9 @@ const ERROR = {
   INVALID_PASSWORD: "Password must contain letters and numbers and be at least 8 chars long.",
   PASSWORDS_NOT_MATCH: "Passwords do not match.",
   EMAIL_DUPLICATE: "This email is already taken. Please try another.",
-  FAIL_LOGIN: "Incorrect email address or password",
+  FAIL_LOGIN: "Incorrect password.",
   NO_ACCOUNT: "No account found.",
-  SERVER_ERROR: "Internal server error.",
+  SERVER_ERROR: "Internal server error. Please try again",
 };
 
 module.exports = ERROR;

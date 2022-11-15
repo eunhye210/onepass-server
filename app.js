@@ -4,8 +4,11 @@ const logger = require("morgan");
 const express = require("express");
 
 const signupRouter = require("./routes/signup");
+const loginRouter = require("./routes/login");
 const otpRouter = require("./routes/otp");
 
+const connectMongoDB = require("./configs/connectMongoDB");
+connectMongoDB();
 const app = express();
 
 app.use(cors());
@@ -15,6 +18,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/signup", signupRouter);
+app.use("/login", loginRouter);
 app.use("/otp", otpRouter);
 
 app.use(function (req, res, next) {

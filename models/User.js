@@ -6,6 +6,13 @@ const userSchema = new mongoose.Schema({
   verifier: { type: String, required: true },
   privateKey: { type: String },
   oneTimePassword: { type: String },
+  passwordList: [
+    {
+      url: { type: String },
+      username: { type: String },
+      password: { type: String },
+    }
+  ]
 });
 
 module.exports = mongoose.model("User", userSchema);

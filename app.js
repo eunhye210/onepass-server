@@ -6,6 +6,7 @@ const express = require("express");
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login");
 const otpRouter = require("./routes/otp");
+const usersRouter = require("./routes/users");
 
 const connectMongoDB = require("./configs/connectMongoDB");
 connectMongoDB();
@@ -20,6 +21,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
 app.use("/otp", otpRouter);
+// sessionKey 확인 로직 들어가기
+app.use("/users", usersRouter);
 
 app.use(function (req, res, next) {
   const error = new Error("Not Found");

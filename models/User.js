@@ -9,10 +9,11 @@ const userSchema = new mongoose.Schema({
   passwordList: [
     {
       url: { type: String },
+      name: { type: String },
       username: { type: String },
-      password: { type: String },
-    }
-  ]
+      password: { type: mongoose.Mixed },
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

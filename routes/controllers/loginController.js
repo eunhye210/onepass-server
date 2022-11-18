@@ -28,6 +28,7 @@ module.exports = {
   sendVerifier: async function (req, res, next) {
     try {
       const { email } = req.params;
+
       const user = await User.findOne({ email });
       const data = JSON.parse(user.verifier);
       const { salt, verifier } = data;

@@ -95,4 +95,35 @@ module.exports = {
       next(err);
     }
   },
+  deleteAccount: async function (req, res, next) {
+    const { userId } = req.params;
+
+    try {
+      await User.findByIdAndDelete(userId);
+      res.sendStatus(200);
+    } catch (err) {
+      err.status = 500;
+      err.errorMessage = ERROR.SERVER_ERROR;
+      next(err);
+    }
+  },
+  changeMasterPassword: async function (req, res, next) {
+    const { userId } = req.params;
+    const { salt, verifier } = req.body;
+
+    try {
+      await User.updateOne(
+        { _id: userId },
+        {
+          $set: { verifier: JSON.stringify({ salt, verifier }) },
+        }
+      );
+
+      res.sendStatus(200);
+    } catch (err) {
+      err.status = 500;
+      err.errorMessage = ERROR.SERVER_ERROR;
+      next(err);
+    }
+  },
 };

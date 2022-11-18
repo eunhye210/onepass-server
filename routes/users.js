@@ -8,7 +8,8 @@ const {
   updatePassword,
   deletePassword,
   deleteAccount,
-  changeMasterPassword
+  changeMasterPassword,
+  setPasswordStrength
 } = require("./controllers/usersController");
 
 router.get("/:userId", getUserInfo);
@@ -24,5 +25,7 @@ router
 router.delete("/:userId/withdraw", deleteAccount);
 
 router.patch("/:userId/reset-password", changeMasterPassword);
+
+router.post("/:userId/account/password-strength", setPasswordStrength);
 
 module.exports = router;

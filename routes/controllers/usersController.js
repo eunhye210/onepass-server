@@ -90,21 +90,22 @@ module.exports = {
 
       res.sendStatus(200);
     } catch (err) {
-      err.status = 500;
-      err.errorMessage = ERROR.SERVER_ERROR;
-      next(err);
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
     }
   },
   deleteAccount: async function (req, res, next) {
     const { userId } = req.params;
 
     try {
+      // key__Vault 삭제 로직 추가 필요 !!
       await User.findByIdAndDelete(userId);
       res.sendStatus(200);
     } catch (err) {
-      err.status = 500;
-      err.errorMessage = ERROR.SERVER_ERROR;
-      next(err);
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
     }
   },
   changeMasterPassword: async function (req, res, next) {
@@ -121,9 +122,28 @@ module.exports = {
 
       res.sendStatus(200);
     } catch (err) {
-      err.status = 500;
-      err.errorMessage = ERROR.SERVER_ERROR;
-      next(err);
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
+    }
+  },
+  setPasswordStrength: async function (req, res, next) {
+    const { userId } = req.params;
+    const { type } = req.body;
+
+    try {
+      await User.updateOne(
+        { _id: userId },
+        { $set: { passwordStrength: type } }
+      );
+
+      res
+        .status(200)
+        .json(`Your password generator strength type is "${type}".`);
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
     }
   },
 };

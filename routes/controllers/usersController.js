@@ -1,5 +1,7 @@
 const User = require("../../models/User");
 
+const createClientEncryption = require("../../configs/createClientEncryption");
+
 const saveEncryptedData = require("../../services/saveEncryptedData");
 const getDecryptedData = require("../../services/getDecryptedData");
 const updateEncryptedData = require("../../services/updateEncryptedData");
@@ -140,6 +142,39 @@ module.exports = {
       res
         .status(200)
         .json(`Your password generator strength type is "${type}".`);
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
+    }
+  },
+  checkUrlData: async function (req, res, next) {
+    const { userId, url } = req.params;
+    const regExp = new RegExp(url, "i");
+
+    try {
+      const result = await User.findOne(
+        {
+          _id: userId,
+          "passwordList.url": { $regex: regExp },
+        },
+        {
+          "passwordList.$": 1,
+        }
+      );
+
+      if (result) {
+        let passwordData = result.passwordList[0];
+        const { clientEncryption } = await createClientEncryption();
+
+        passwordData.password = await clientEncryption.decrypt(
+          passwordData.password
+        );
+
+        res.status(200).json({ data: passwordData });
+      } else {
+        res.status(404).json({ errorMessage: "No Data Found" });
+      }
     } catch (err) {
       const error = new Error(ERROR.SERVER_ERROR);
       error.status = 500;

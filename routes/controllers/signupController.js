@@ -28,6 +28,7 @@ module.exports = {
         username,
         email,
         verifier: JSON.stringify({ salt, verifier }),
+        cookieExpire: "3h"
       });
 
       res.sendStatus(201);
@@ -58,9 +59,9 @@ module.exports = {
       await sendEmail(email, emailTitle, emailBody);
       res.status(200).json(randomString);
     } catch (err) {
-      err.status = 500;
-      err.message = ERROR.SERVER_ERROR;
-      next(err);
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
     }
   },
 };

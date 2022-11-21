@@ -1,5 +1,7 @@
 const User = require("../../models/User");
 
+const setMaxAge = require("../../services/setMaxAge");
+
 const ERROR = require("../../constants/error");
 const SRP6JavascriptServerSession = require("../../constants/encryptionAlgorithms");
 
@@ -9,6 +11,7 @@ module.exports = {
       const { email, A, M1 } = req.body;
 
       const user = await User.findOne({ email });
+      const expireTime = user.cookieExpire;
 
       const newPrivate = JSON.parse(user.privateKey);
       const server = new SRP6JavascriptServerSession();
@@ -17,7 +20,14 @@ module.exports = {
       const M2 = server.step2(A, M1);
       const sessionKey = encodeURIComponent(M2);
 
-      res.status(200).json({ userId: user._id, sessionKey });
+      if (expireTime === "unlimited") {
+        res.cookie("sessionKey", sessionKey);
+      } else {
+        const time = setMaxAge(expireTime);
+        res.cookie("sessionKey", sessionKey, { maxAge: time });
+      }
+
+      res.status(200).json({ userId: user._id });
     } catch (err) {
       const error = new Error();
       error.status = 400;

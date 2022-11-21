@@ -2,27 +2,37 @@ const path = require("path");
 const cors = require("cors");
 const logger = require("morgan");
 const express = require("express");
+const cookieParser = require("cookie-parser");
 
 const signupRouter = require("./routes/signup");
 const loginRouter = require("./routes/login");
+const logoutRouter = require("./routes/logout");
 const otpRouter = require("./routes/otp");
 const usersRouter = require("./routes/users");
 
+const ensureAuthenticated = require("./middlewares/ensureAuthenticated");
 const connectMongoDB = require("./configs/connectMongoDB");
 connectMongoDB();
+
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(cookieParser());
+
 
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
+app.use("/logout", logoutRouter);
 app.use("/otp", otpRouter);
-// sessionKey 확인 로직 들어가기
-app.use("/users", usersRouter);
+app.use("/users", ensureAuthenticated, usersRouter);
 
 app.use(function (req, res, next) {
   const error = new Error("Not Found");

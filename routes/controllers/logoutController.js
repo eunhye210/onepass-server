@@ -1,6 +1,19 @@
+const mongoose = require("mongoose");
+
+const User = require("../../models/User");
+const ERROR = require("../../constants/error");
+
 module.exports = {
-  logout: function (req, res, next) {
+  logout: async function (req, res, next) {
+    const { userId } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(404).json({ errorMessage: ERROR.SERVER_ERROR });
+    }
+
+    await User.findByIdAndUpdate(userId, { $set: { sessionKey: [] } });
+
     res.clearCookie("sessionKey");
     res.sendStatus(200);
-  }
-}
+  },
+};

@@ -3,6 +3,6 @@ const router = express.Router();
 
 const { logout } = require("./controllers/logoutController");
 
-router.post("/", logout);
+router.post("/:userId", logout);
 
 module.exports = router;

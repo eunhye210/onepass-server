@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true },
   verifier: { type: String, required: true },
   privateKey: { type: String },
+  sessionKey: { type: Array },
   oneTimePassword: { type: String },
   cookieExpire: { type: String, default: "3h" },
   passwordStrength: { type: String, default: "good" },

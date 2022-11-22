@@ -36,8 +36,8 @@ router
   .get(ensureAuthenticated, getAccountSetting)
   .post(ensureAuthenticated, setAccountSetting);
 
-router.get("/:userId/url/:url", checkUrlData);
+router.get("/:userId/url/:url", ensureAuthenticated, checkUrlData);
 
-router.get("/:userId/random-password", createRandomPassword);
+router.get("/:userId/random-password", ensureAuthenticated, createRandomPassword);
 
 module.exports = router;

@@ -9,8 +9,9 @@ const {
   deletePassword,
   deleteAccount,
   changeMasterPassword,
-  setPasswordStrength,
-  checkUrlData
+  getAccountSetting,
+  setAccountSetting,
+  checkUrlData,
 } = require("./controllers/usersController");
 
 router.get("/:userId", getUserInfo);
@@ -27,7 +28,10 @@ router.delete("/:userId/withdraw", deleteAccount);
 
 router.patch("/:userId/reset-password", changeMasterPassword);
 
-router.post("/:userId/account/password-strength", setPasswordStrength);
+router
+  .route("/:userId/account-setting")
+  .get(getAccountSetting)
+  .post(setAccountSetting);
 
 router.get("/:userId/url/:url", checkUrlData);
 

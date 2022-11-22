@@ -129,19 +129,46 @@ module.exports = {
       next(error);
     }
   },
-  setPasswordStrength: async function (req, res, next) {
+  getAccountSetting: async function (req, res, next) {
     const { userId } = req.params;
-    const { type } = req.body;
 
     try {
-      await User.updateOne(
-        { _id: userId },
-        { $set: { passwordStrength: type } }
-      );
+      const userData = await User.findById(userId);
 
-      res
-        .status(200)
-        .json(`Your password generator strength type is "${type}".`);
+      res.status(200).json({
+        passwordOption: userData.passwordStrength,
+        sessionTimeout: userData.cookieExpire,
+      });
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
+    }
+  },
+  setAccountSetting: async function (req, res, next) {
+    const { userId } = req.params;
+    const { type, option } = req.body;
+
+    try {
+      if (type === "password-strength") {
+        await User.updateOne(
+          { _id: userId },
+          { $set: { passwordStrength: option } }
+        );
+
+        res
+          .status(200)
+          .json(`Your password generator strength type is "${option}".`);
+      }
+
+      if (type === "session-timeout") {
+        await User.updateOne(
+          { _id: userId },
+          { $set: { cookieExpire: option } }
+        );
+
+        res.status(200).json(`Your login session timeout is "${option}".`);
+      }
     } catch (err) {
       const error = new Error(ERROR.SERVER_ERROR);
       error.status = 500;

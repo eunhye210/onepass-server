@@ -20,6 +20,11 @@ module.exports = {
       const M2 = server.step2(A, M1);
       const sessionKey = encodeURIComponent(M2);
 
+      await User.findOneAndUpdate(
+        { email },
+        { $push: { sessionKey: sessionKey } }
+      );
+
       if (expireTime === "unlimited") {
         res.cookie("sessionKey", sessionKey);
       } else {
@@ -86,6 +91,11 @@ module.exports = {
       );
 
       const expireTime = user.cookieExpire;
+
+      await User.findOneAndUpdate(
+        { email },
+        { $push: { sessionKey: user.oneTimePassword } }
+      );
 
       if (expireTime === "unlimited") {
         res.cookie("sessionKey", user.oneTimePassword);

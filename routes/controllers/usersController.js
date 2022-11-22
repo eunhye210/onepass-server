@@ -5,6 +5,7 @@ const createClientEncryption = require("../../configs/createClientEncryption");
 const saveEncryptedData = require("../../services/saveEncryptedData");
 const getDecryptedData = require("../../services/getDecryptedData");
 const updateEncryptedData = require("../../services/updateEncryptedData");
+const createRandomPassword = require("../../services/createRandomPassword");
 
 const ERROR = require("../../constants/error");
 
@@ -202,6 +203,21 @@ module.exports = {
       } else {
         res.status(404).json({ errorMessage: "No Data Found" });
       }
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
+    }
+  },
+  createRandomPassword: async function (req, res, next) {
+    try {
+      const { userId } = req.params;
+      const user = await User.findById(userId);
+      const passwordStrength = user.passwordStrength;
+
+      const randomPassword = createRandomPassword(passwordStrength);
+
+      res.status(200).json({ data: randomPassword });
     } catch (err) {
       const error = new Error(ERROR.SERVER_ERROR);
       error.status = 500;

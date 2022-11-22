@@ -10,7 +10,6 @@ const logoutRouter = require("./routes/logout");
 const otpRouter = require("./routes/otp");
 const usersRouter = require("./routes/users");
 
-const ensureAuthenticated = require("./middlewares/ensureAuthenticated");
 const connectMongoDB = require("./configs/connectMongoDB");
 connectMongoDB();
 
@@ -27,12 +26,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 
-
 app.use("/signup", signupRouter);
 app.use("/login", loginRouter);
 app.use("/logout", logoutRouter);
 app.use("/otp", otpRouter);
-app.use("/users", ensureAuthenticated, usersRouter);
+app.use("/users", usersRouter);
 
 app.use(function (req, res, next) {
   const error = new Error("Not Found");

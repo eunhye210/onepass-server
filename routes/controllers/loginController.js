@@ -29,9 +29,8 @@ module.exports = {
 
       res.status(200).json({ userId: user._id });
     } catch (err) {
-      const error = new Error();
+      const error = new Error(ERROR.FAIL_LOGIN);
       error.status = 400;
-      error.message = ERROR.FAIL_LOGIN;
       next(error);
     }
   },
@@ -54,9 +53,52 @@ module.exports = {
 
       res.status(200).json(JSON.stringify({ salt, B }));
     } catch (err) {
-      err.status = 400;
-      err.message = ERROR.NO_ACCOUNT;
-      next(err);
+      const error = new Error(ERROR.NO_ACCOUNT);
+      error.status = 400;
+      next(error);
+    }
+  },
+  checkOTP: async function (req, res, next) {
+    try {
+      const { email } = req.params;
+      const user = await User.findOne({ email });
+
+      if (user.oneTimePassword) {
+        return res
+          .status(200)
+          .json({ type: true, otp: user.oneTimePassword, userId: user._id });
+      } else {
+        return res.status(200).json({ type: false });
+      }
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
+    }
+  },
+  deleteOTP: async function (req, res, next) {
+    try {
+      const { email } = req.params;
+
+      const user = await User.findOneAndUpdate(
+        { email },
+        { $set: { oneTimePassword: "" } }
+      );
+
+      const expireTime = user.cookieExpire;
+
+      if (expireTime === "unlimited") {
+        res.cookie("sessionKey", user.oneTimePassword);
+      } else {
+        const time = setMaxAge(expireTime);
+        res.cookie("sessionKey", user.oneTimePassword, { maxAge: time });
+      }
+
+      res.status(200).json({ userId: user._id });
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
     }
   },
 };

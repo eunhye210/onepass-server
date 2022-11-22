@@ -8,7 +8,7 @@ const ERROR = require("../../constants/error");
 module.exports = {
   sendOTP: async function (req, res, next) {
     const { email } = req.body;
-    const password = createLowerUpperNumPassword(16);
+    const password = createLowerUpperNumPassword(12);
 
     try {
       const user = await User.findOneAndUpdate(
@@ -31,9 +31,9 @@ module.exports = {
       await sendEmail(email, emailTitle, emailBody);
       res.sendStatus(200);
     } catch (err) {
-      err.status = 500;
-      err.message = ERROR.SERVER_ERROR;
-      next(err);
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+      next(error);
     }
   },
 };

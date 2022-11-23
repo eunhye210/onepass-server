@@ -14,7 +14,7 @@ const {
   getAccountSetting,
   setAccountSetting,
   checkUrlData,
-  createRandomPassword
+  createRandomPassword,
 } = require("./controllers/usersController");
 
 router.get("/:userId", ensureAuthenticated, getUserInfo);
@@ -29,7 +29,11 @@ router
 
 router.delete("/:userId/withdraw", ensureAuthenticated, deleteAccount);
 
-router.patch("/:userId/reset-password", ensureAuthenticated, changeMasterPassword);
+router.patch(
+  "/:userId/reset-password",
+  ensureAuthenticated,
+  changeMasterPassword
+);
 
 router
   .route("/:userId/account-setting")
@@ -38,6 +42,10 @@ router
 
 router.get("/:userId/url/:url", ensureAuthenticated, checkUrlData);
 
-router.get("/:userId/random-password", ensureAuthenticated, createRandomPassword);
+router.get(
+  "/:userId/random-password",
+  ensureAuthenticated,
+  createRandomPassword
+);
 
 module.exports = router;

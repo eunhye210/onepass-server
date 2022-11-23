@@ -32,7 +32,7 @@ module.exports = {
         res.cookie("sessionKey", sessionKey, { maxAge: time });
       }
 
-      res.status(200).json({ userId: user._id, sessionKey });
+      res.status(200).json({ userId: user._id });
     } catch (err) {
       const error = new Error(ERROR.FAIL_LOGIN);
       error.status = 400;

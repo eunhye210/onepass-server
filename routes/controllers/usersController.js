@@ -102,7 +102,6 @@ module.exports = {
     const { userId } = req.params;
 
     try {
-      // key__Vault 삭제 로직 추가 필요 !!
       await User.findByIdAndDelete(userId);
       res.sendStatus(200);
     } catch (err) {
@@ -212,6 +211,7 @@ module.exports = {
   createRandomPassword: async function (req, res, next) {
     try {
       const { userId } = req.params;
+
       const user = await User.findById(userId);
       const passwordStrength = user.passwordStrength;
 

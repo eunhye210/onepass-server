@@ -12,10 +12,11 @@
     "debug": "~2.6.9",
     "dotenv": "^16.0.3",
     "express": "~4.16.1",
-    "mongodb": "4.2.0",
+    "mongodb": "3.6.3",
     "mongodb-client-encryption": "1.2.1",
     "mongoose": "^6.7.2",
     "morgan": "~1.9.1",
+    "node-gyp": "^3.7.0",
     "node-mailjet": "^3.3.2",
     "random-words": "^1.2.0",
     "thinbus-srp": "^1.8.0"

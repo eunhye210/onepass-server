@@ -6,17 +6,10 @@ async function saveEncryptedData(userId, userDataArr) {
   const { provider, masterKey, clientEncryption } = await createClientEncryption();
 
   try {
-    const dataKey = await clientEncryption.getKeyByAltName(userId);
-    let dataKeyId = null;
-
-    if (!dataKey) {
-      dataKeyId = await clientEncryption.createDataKey(provider, {
-        masterKey,
-        keyAltNames: [userId],
-      });
-    } else {
-      dataKeyId = dataKey._id;
-    }
+    const dataKeyId = await clientEncryption.createDataKey(provider, {
+      masterKey,
+      keyAltNames: [userId],
+    });
 
     userDataArr.forEach(async (data) => {
       const encryptedPassword = await clientEncryption.encrypt(data.password, {

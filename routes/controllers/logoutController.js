@@ -11,9 +11,11 @@ module.exports = {
       return res.status(404).json({ errorMessage: ERROR.SERVER_ERROR });
     }
 
-    await User.findByIdAndUpdate(userId, { $set: { sessionKey: [] } });
+    await User.findByIdAndUpdate(userId, {
+      $set: { sessionKey: "", cookie: [] },
+    });
 
-    res.clearCookie("sessionKey");
+    res.clearCookie("cookie");
     res.sendStatus(200);
   },
 };

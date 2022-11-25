@@ -1,3 +1,5 @@
+const CryptoJS = require("crypto-js");
+
 const User = require("../../models/User");
 
 const createClientEncryption = require("../../configs/createClientEncryption");
@@ -13,8 +15,8 @@ module.exports = {
   getUserInfo: async function (req, res, next) {
     const { userId } = req.params;
     try {
-      const userData = await User.findById(userId);
-      const { passwordList } = userData;
+      const user = await User.findById(userId);
+      const { passwordList } = user;
 
       const result = passwordList.map((item) => {
         return {
@@ -24,7 +26,12 @@ module.exports = {
         };
       });
 
-      res.status(200).json(result);
+      const cipherText = CryptoJS.AES.encrypt(
+        JSON.stringify(result),
+        user.sessionKey
+      ).toString();
+
+      res.status(200).json(cipherText);
     } catch (err) {
       err.status = 500;
       err.errorMessage = ERROR.SERVER_ERROR;
@@ -33,10 +40,15 @@ module.exports = {
   },
   addPassword: async function (req, res, next) {
     const { userId } = req.params;
-    const userDataArr = req.body;
+    const { cipherText } = req.body;
 
     try {
-      const result = await saveEncryptedData(userId, userDataArr);
+      const user = await User.findById(userId);
+
+      const bytes = CryptoJS.AES.decrypt(cipherText, user.sessionKey);
+      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+      const result = await saveEncryptedData(userId, decryptedData);
 
       if (result === "serverError") {
         throw new Error(ERROR.SERVER_ERROR);
@@ -52,13 +64,19 @@ module.exports = {
     const { userId, passwordId } = req.params;
 
     try {
+      const user = await User.findById(userId);
       const result = await getDecryptedData(userId, passwordId);
 
       if (result === "serverError") {
         throw new Error(ERROR.SERVER_ERROR);
       }
 
-      res.status(200).json(result);
+      const cipherText = CryptoJS.AES.encrypt(
+        JSON.stringify(result),
+        user.sessionKey
+      ).toString();
+
+      res.status(200).json(cipherText);
     } catch (err) {
       err.status = 500;
       next(err);
@@ -69,7 +87,16 @@ module.exports = {
     const { password } = req.body;
 
     try {
-      const result = await updateEncryptedData(userId, passwordId, password);
+      const user = await User.findById(userId);
+
+      const bytes = CryptoJS.AES.decrypt(password, user.sessionKey);
+      const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+
+      const result = await updateEncryptedData(
+        userId,
+        passwordId,
+        decryptedData
+      );
 
       if (result === "serverError") {
         throw new Error(ERROR.SERVER_ERROR);
@@ -191,6 +218,8 @@ module.exports = {
       );
 
       if (result) {
+        const user = await User.findById(userId);
+
         let passwordData = result.passwordList[0];
         const { clientEncryption } = await createClientEncryption();
 
@@ -198,7 +227,12 @@ module.exports = {
           passwordData.password
         );
 
-        res.status(200).json({ data: passwordData });
+        const cipherText = CryptoJS.AES.encrypt(
+          JSON.stringify(passwordData),
+          user.sessionKey
+        ).toString();
+
+        res.status(200).json(cipherText);
       } else {
         res.status(404).json({ errorMessage: "No Data Found" });
       }

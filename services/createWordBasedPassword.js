@@ -9,7 +9,9 @@ function wordBasedPasswordGenerator() {
     randomNumberString += numbers.charAt(Math.floor(Math.random() * 10));
   }
 
-  const randomWordsNumbersArr = randomWordsArr.concat(randomNumberString.split(""));
+  const randomWordsNumbersArr = randomWordsArr.concat(
+    randomNumberString.split("")
+  );
   const shuffledArr = randomWordsNumbersArr.sort(() => Math.random() - 0.5);
 
   return shuffledArr.join("");

@@ -2,14 +2,18 @@ const User = require("../models/User");
 
 const createClientEncryption = require("../configs/createClientEncryption");
 
-async function updateEncryptedData(userId, passwordId, password) {
+async function updateEncryptedData(userId, passwordId, newPassword) {
   const { provider, masterKey, clientEncryption } =
     await createClientEncryption();
 
   try {
-    const encryptedPassword = await clientEncryption.encrypt(password, {
+    const dataKeyId = await clientEncryption.createDataKey(provider, {
+      masterKey,
+    });
+
+    const encryptedPassword = await clientEncryption.encrypt(newPassword, {
       algorithm: "AEAD_AES_256_CBC_HMAC_SHA_512-Random",
-      keyAltName: userId,
+      keyId: dataKeyId,
     });
 
     const result = await User.updateOne(

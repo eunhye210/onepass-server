@@ -3,12 +3,12 @@ const User = require("../models/User");
 const createClientEncryption = require("../configs/createClientEncryption");
 
 async function saveEncryptedData(userId, userDataArr) {
-  const { provider, masterKey, clientEncryption } = await createClientEncryption();
+  const { provider, masterKey, clientEncryption } =
+    await createClientEncryption();
 
   try {
     const dataKeyId = await clientEncryption.createDataKey(provider, {
       masterKey,
-      keyAltNames: [userId],
     });
 
     userDataArr.forEach(async (data) => {

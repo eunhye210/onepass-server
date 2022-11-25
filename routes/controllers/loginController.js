@@ -18,18 +18,19 @@ module.exports = {
       server.fromPrivateStoreState(newPrivate);
 
       const M2 = server.step2(A, M1);
-      const sessionKey = encodeURIComponent(M2);
+      const cookie = encodeURIComponent(M2);
+      const sessionKey = server.getSessionKey();
 
       await User.findOneAndUpdate(
         { email },
-        { $push: { sessionKey: sessionKey } }
+        { $push: { cookie: cookie }, $set: { sessionKey: sessionKey } }
       );
 
       if (expireTime === "unlimited") {
-        res.cookie("sessionKey", sessionKey);
+        res.cookie("cookie", cookie);
       } else {
         const time = setMaxAge(expireTime);
-        res.cookie("sessionKey", sessionKey, { maxAge: time });
+        res.cookie("cookie", cookie, { maxAge: time });
       }
 
       res.status(200).json({ userId: user._id });

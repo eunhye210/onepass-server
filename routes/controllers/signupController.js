@@ -28,7 +28,7 @@ module.exports = {
         username,
         email,
         verifier: JSON.stringify({ salt, verifier }),
-        cookieExpire: "3h"
+        cookieExpire: "3h",
       });
 
       res.sendStatus(201);

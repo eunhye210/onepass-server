@@ -5,7 +5,7 @@ const {
   login,
   sendVerifier,
   checkOTP,
-  deleteOTP
+  deleteOTP,
 } = require("./controllers/loginController");
 
 router.post("/", login);

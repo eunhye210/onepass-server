@@ -3,6 +3,8 @@ const router = express.Router();
 
 const { logout } = require("./controllers/logoutController");
 
-router.post("/:userId", logout);
+const { catchError } = require("../middlewares/catchError");
+
+router.post("/:userId", catchError(logout, "SERVER_ERROR", 500));
 
 module.exports = router;

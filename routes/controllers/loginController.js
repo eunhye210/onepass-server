@@ -7,56 +7,84 @@ const SRP6JavascriptServerSession = require("../../constants/encryptionAlgorithm
 
 module.exports = {
   login: async function (req, res, next) {
-    const { email, A, M1 } = req.body;
+    try {
+      const { email, A, M1 } = req.body;
 
-    const user = await User.findOne({ email });
-    const expireTime = user.cookieExpire;
+      const user = await User.findOne({ email });
 
-    const newPrivate = JSON.parse(user.privateKey);
-    const server = new SRP6JavascriptServerSession();
-    server.fromPrivateStoreState(newPrivate);
+      if (!user) {
+        return res.status(400).json({ errorMessage: ERROR.NO_ACCOUNT });
+      }
 
-    const M2 = server.step2(A, M1);
-    const cookie = encodeURIComponent(M2);
-    const sessionKey = server.getSessionKey();
+      const expireTime = user.cookieExpire;
 
-    await User.findOneAndUpdate(
-      { email },
-      { $push: { cookie: cookie }, $set: { sessionKey: sessionKey } }
-    );
+      const newPrivate = JSON.parse(user.privateKey);
+      const server = new SRP6JavascriptServerSession();
+      server.fromPrivateStoreState(newPrivate);
 
-    if (expireTime === "unlimited") {
-      res.cookie("cookie", cookie);
-    } else {
-      const time = setMaxAge(expireTime);
-      res.cookie("cookie", cookie, { maxAge: time });
+      const M2 = server.step2(A, M1);
+      const cookie = encodeURIComponent(M2);
+      const sessionKey = server.getSessionKey();
+
+      await User.findOneAndUpdate(
+        { email },
+        { $push: { cookie: cookie }, $set: { sessionKey: sessionKey } }
+      );
+
+      if (expireTime === "unlimited") {
+        res.cookie("cookie", cookie);
+      } else {
+        const time = setMaxAge(expireTime);
+        res.cookie("cookie", cookie, { maxAge: time });
+      }
+
+      res.status(200).json({ userId: user._id });
+    } catch (err) {
+      const error = new Error(ERROR.FAIL_LOGIN);
+      error.status = 400;
+
+      next(error);
     }
-
-    res.status(200).json({ userId: user._id });
   },
   sendVerifier: async function (req, res, next) {
-    const { email } = req.params;
+    try {
+      const { email } = req.params;
 
-    const user = await User.findOne({ email });
-    const data = JSON.parse(user.verifier);
-    const { salt, verifier } = data;
+      const user = await User.findOne({ email });
 
-    const encryptionServer = new SRP6JavascriptServerSession();
-    const B = encryptionServer.step1(email, salt, verifier);
-    const privateState = encryptionServer.toPrivateStoreState();
+      if (!user) {
+        return res.status(400).json({ errorMessage: ERROR.NO_ACCOUNT });
+      }
 
-    await User.updateUser(
-      "email",
-      email,
-      "privateKey",
-      JSON.stringify(privateState)
-    );
+      const data = JSON.parse(user.verifier);
+      const { salt, verifier } = data;
 
-    res.status(200).json(JSON.stringify({ salt, B }));
+      const encryptionServer = new SRP6JavascriptServerSession();
+      const B = encryptionServer.step1(email, salt, verifier);
+      const privateState = encryptionServer.toPrivateStoreState();
+
+      await User.updateUser(
+        "email",
+        email,
+        "privateKey",
+        JSON.stringify(privateState)
+      );
+
+      res.status(200).json(JSON.stringify({ salt, B }));
+    } catch (err) {
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+
+      next(error);
+    }
   },
   checkOTP: async function (req, res, next) {
     const { email } = req.params;
     const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error(ERROR.NO_ACCOUNT);
+    }
 
     if (user.oneTimePassword) {
       return res

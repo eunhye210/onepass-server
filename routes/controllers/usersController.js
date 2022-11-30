@@ -3,10 +3,10 @@ const User = require("../../models/User");
 const createClientEncryption = require("../../configs/createClientEncryption");
 
 const { encryptData, decryptData } = require("../../utils/processCrypto");
+const { createRandomPassword } = require("../../services/createRandomPasswords");
 const saveEncryptedData = require("../../services/saveEncryptedData");
 const getDecryptedData = require("../../services/getDecryptedData");
 const updateEncryptedData = require("../../services/updateEncryptedData");
-const createRandomPassword = require("../../services/createRandomPassword");
 
 const ERROR = require("../../constants/error");
 
@@ -38,7 +38,7 @@ module.exports = {
     const result = await saveEncryptedData(userId, decryptedData);
 
     if (result === "serverError") {
-      throw new Error(ERROR.SERVER_ERROR);
+      throw Error;
     }
 
     res.status(200).json("Your password has been successfully stored");
@@ -50,7 +50,7 @@ module.exports = {
     const result = await getDecryptedData(userId, passwordId);
 
     if (result === "serverError") {
-      throw new Error(ERROR.SERVER_ERROR);
+      throw Error;
     }
 
     const cipherText = encryptData(result, user.sessionKey);
@@ -66,7 +66,7 @@ module.exports = {
     const result = await updateEncryptedData(userId, passwordId, decryptedData);
 
     if (result === "serverError") {
-      throw new Error(ERROR.SERVER_ERROR);
+      throw Error;
     }
 
     res.status(200).json("Your password has been successfully updated");

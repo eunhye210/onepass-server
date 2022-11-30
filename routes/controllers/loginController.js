@@ -11,6 +11,11 @@ module.exports = {
       const { email, A, M1 } = req.body;
 
       const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(400).json({ errorMessage: ERROR.NO_ACCOUNT });
+      }
+
       const expireTime = user.cookieExpire;
 
       const newPrivate = JSON.parse(user.privateKey);
@@ -37,6 +42,7 @@ module.exports = {
     } catch (err) {
       const error = new Error(ERROR.FAIL_LOGIN);
       error.status = 400;
+
       next(error);
     }
   },
@@ -45,6 +51,11 @@ module.exports = {
       const { email } = req.params;
 
       const user = await User.findOne({ email });
+
+      if (!user) {
+        return res.status(400).json({ errorMessage: ERROR.NO_ACCOUNT });
+      }
+
       const data = JSON.parse(user.verifier);
       const { salt, verifier } = data;
 
@@ -52,64 +63,50 @@ module.exports = {
       const B = encryptionServer.step1(email, salt, verifier);
       const privateState = encryptionServer.toPrivateStoreState();
 
-      await User.updateOne(
-        { email },
-        { $set: { privateKey: JSON.stringify(privateState) } }
+      await User.updateUser(
+        "email",
+        email,
+        "privateKey",
+        JSON.stringify(privateState)
       );
 
       res.status(200).json(JSON.stringify({ salt, B }));
     } catch (err) {
-      const error = new Error(ERROR.NO_ACCOUNT);
-      error.status = 400;
+      const error = new Error(ERROR.SERVER_ERROR);
+      error.status = 500;
+
       next(error);
     }
   },
   checkOTP: async function (req, res, next) {
-    try {
-      const { email } = req.params;
-      const user = await User.findOne({ email });
+    const { email } = req.params;
+    const user = await User.findOne({ email });
 
-      if (user.oneTimePassword) {
-        return res
-          .status(200)
-          .json({ type: true, otp: user.oneTimePassword, userId: user._id });
-      } else {
-        return res.status(200).json({ type: false });
-      }
-    } catch (err) {
-      const error = new Error(ERROR.SERVER_ERROR);
-      error.status = 500;
-      next(error);
+    if (!user) {
+      throw new Error(ERROR.NO_ACCOUNT);
+    }
+
+    if (user.oneTimePassword) {
+      return res
+        .status(200)
+        .json({ type: true, otp: user.oneTimePassword, userId: user._id });
+    } else {
+      return res.status(200).json({ type: false });
     }
   },
   deleteOTP: async function (req, res, next) {
-    try {
-      const { email } = req.params;
+    const { email } = req.params;
+    const { OTP } = req.body;
 
-      const user = await User.findOneAndUpdate(
-        { email },
-        { $set: { oneTimePassword: "" } }
-      );
-
-      const expireTime = user.cookieExpire;
-
-      await User.findOneAndUpdate(
-        { email },
-        { $push: { sessionKey: user.oneTimePassword } }
-      );
-
-      if (expireTime === "unlimited") {
-        res.cookie("sessionKey", user.oneTimePassword);
-      } else {
-        const time = setMaxAge(expireTime);
-        res.cookie("sessionKey", user.oneTimePassword, { maxAge: 1000 * 30 });
+    const user = await User.findOneAndUpdate(
+      { email },
+      {
+        $set: { oneTimePassword: "", sessionKey: OTP },
+        $push: { cookie: OTP },
       }
+    );
 
-      res.status(200).json({ userId: user._id });
-    } catch (err) {
-      const error = new Error(ERROR.SERVER_ERROR);
-      error.status = 500;
-      next(error);
-    }
+    res.cookie("cookie", OTP, { maxAge: 1000 * 60 * 60 * 24 });
+    res.status(200).json({ userId: user._id });
   },
 };

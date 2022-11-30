@@ -20,4 +20,16 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+userSchema.statics.updateUser = async function (
+  field,
+  fieldData,
+  setField,
+  setData
+) {
+  return await this.updateOne(
+    { field: fieldData },
+    { $set: { [setField]: setData } }
+  );
+};
+
 module.exports = mongoose.model("User", userSchema);

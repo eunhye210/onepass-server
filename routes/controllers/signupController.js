@@ -14,6 +14,7 @@ module.exports = {
     const { username, email, verifier, salt } = req.body;
 
     const user = await User.findOne({ email });
+
     if (user) {
       throw new Error(ERROR.EMAIL_DUPLICATE);
     }
@@ -31,6 +32,7 @@ module.exports = {
     const { email } = req.body;
 
     const user = await User.findOne({ email });
+
     if (user) {
       throw new Error(ERROR.EMAIL_DUPLICATE);
     }

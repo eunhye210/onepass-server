@@ -3,7 +3,9 @@ const User = require("../../models/User");
 const createClientEncryption = require("../../configs/createClientEncryption");
 
 const { encryptData, decryptData } = require("../../utils/processCrypto");
-const { createRandomPassword } = require("../../services/createRandomPasswords");
+const {
+  createRandomPassword,
+} = require("../../services/createRandomPasswords");
 const saveEncryptedData = require("../../services/saveEncryptedData");
 const getDecryptedData = require("../../services/getDecryptedData");
 const updateEncryptedData = require("../../services/updateEncryptedData");
@@ -14,8 +16,7 @@ module.exports = {
   getUserInfo: async function (req, res, next) {
     const { userId } = req.params;
 
-    const user = await User.findById(userId);
-    const { passwordList } = user;
+    const { passwordList, sessionKey } = await User.findById(userId);
 
     const result = passwordList.map((item) => {
       return {
@@ -25,16 +26,16 @@ module.exports = {
       };
     });
 
-    const cipherText = encryptData(result, user.sessionKey);
+    const cipherText = encryptData(result, sessionKey);
     res.status(200).json(cipherText);
   },
   addPassword: async function (req, res, next) {
     const { userId } = req.params;
     const { cipherText } = req.body;
 
-    const user = await User.findById(userId);
+    const { sessionKey } = await User.findById(userId);
 
-    const decryptedData = decryptData(cipherText, user.sessionKey);
+    const decryptedData = decryptData(cipherText, sessionKey);
     const result = await saveEncryptedData(userId, decryptedData);
 
     if (result === "serverError") {
@@ -46,22 +47,22 @@ module.exports = {
   getPassword: async function (req, res, next) {
     const { userId, passwordId } = req.params;
 
-    const user = await User.findById(userId);
+    const { sessionKey } = await User.findById(userId);
     const result = await getDecryptedData(userId, passwordId);
 
     if (result === "serverError") {
       throw Error;
     }
 
-    const cipherText = encryptData(result, user.sessionKey);
+    const cipherText = encryptData(result, sessionKey);
     res.status(200).json(cipherText);
   },
   updatePassword: async function (req, res, next) {
     const { userId, passwordId } = req.params;
     const { password } = req.body;
 
-    const user = await User.findById(userId);
-    const decryptedData = decryptData(password, user.sessionKey);
+    const { sessionKey } = await User.findById(userId);
+    const decryptedData = decryptData(password, sessionKey);
 
     const result = await updateEncryptedData(userId, passwordId, decryptedData);
 
@@ -104,11 +105,11 @@ module.exports = {
   getAccountSetting: async function (req, res, next) {
     const { userId } = req.params;
 
-    const userData = await User.findById(userId);
+    const { passwordStrength, cookieExpire } = await User.findById(userId);
 
     res.status(200).json({
-      passwordOption: userData.passwordStrength,
-      sessionTimeout: userData.cookieExpire,
+      passwordOption: passwordStrength,
+      sessionTimeout: cookieExpire,
     });
   },
   setAccountSetting: async function (req, res, next) {
@@ -144,7 +145,7 @@ module.exports = {
     );
 
     if (result) {
-      const user = await User.findById(userId);
+      const { sessionKey } = await User.findById(userId);
 
       let passwordData = result.passwordList[0];
       const { clientEncryption } = await createClientEncryption();
@@ -153,7 +154,7 @@ module.exports = {
         passwordData.password
       );
 
-      const cipherText = encryptData(passwordData, user.sessionKey);
+      const cipherText = encryptData(passwordData, sessionKey);
       res.status(200).json(cipherText);
     } else {
       res.status(404).json({ errorMessage: "No Data Found" });
@@ -162,8 +163,7 @@ module.exports = {
   createRandomPassword: async function (req, res, next) {
     const { userId } = req.params;
 
-    const user = await User.findById(userId);
-    const passwordStrength = user.passwordStrength;
+    const { passwordStrength } = await User.findById(userId);
 
     const randomPassword = createRandomPassword(passwordStrength);
 

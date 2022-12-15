@@ -171,9 +171,7 @@ OnePass는 쉽고 안전한 로그인 서비스를 지원하는 비밀번호 관
 ### **_1. SRP (Secure Remote Password)_**
 
 **< SRP signup & login 로직 >** <br />
-<img src="https://user-images.githubusercontent.com/109640924/204110617-2d5ae0fe-daef-449d-afd1-d91e987149a0.svg" alt="srp-img" width="520px" height="350px" >
-
-<br />
+<img src="https://user-images.githubusercontent.com/109640924/204110617-2d5ae0fe-daef-449d-afd1-d91e987149a0.svg" alt="srp-img" width="520px" height="370px" >
 
 사용자의 기밀 데이터를 다루는 프로젝트였던 만큼, 클라이언트와 서버간 데이터를 어떻게 주고 받을 지에 대한 고민을 많이 했습니다. 기존에 시도했던 로그인 방식은 비밀번호를 암호화하여 DB에 저장하는 것으로, 해시 암호화를 통해 데이터를 안전하게 저장한다는 장점이 있지만, 클라이언트와 서버간의 통신 속 데이터가 유출되거나 방대한 해시 데이터를 가진 공격자로부터 취약해질 수 있다는 위험성이 있었습니다. 로그인 이후의 요청과 응답에서도, 데이터를 단순히 body에 넣기보다 암호화를 통해 안전한 통신이 이루어질 필요가 있었습니다.
 
@@ -189,7 +187,6 @@ OnePass는 쉽고 안전한 로그인 서비스를 지원하는 비밀번호 관
 
 **< KMS & DEK 로직 >** <br />
 <img src="https://user-images.githubusercontent.com/109640924/204110696-e403aeb9-6593-45c4-b666-4125524f7cd0.svg" alt="dek-img" width="500px" height="280px" >
-<br />
 
 **< DB 저장 예시 >** <br />
 
@@ -221,7 +218,6 @@ OnePass는 쉽고 안전한 로그인 서비스를 지원하는 비밀번호 관
   ...
 }
 ```
-
 <br />
 
 DB에 저장하는 방식 또한 중요합니다. 단순히 사용자별 대칭키를 생성하여 양방향 암호화 방식을 진행할 수도 있었지만, 해당 방식으로는 DB가 해킹되었을 경우 데이터 하나가 복호화된다면 나머지도 자연스럽게 복호화된다는 위험성이 었었습니다. 이에 별도의 공간에 MasterKey를 생성하여 이중 암호화 절차를 밟는 방식을 진행하게 되었습니다.

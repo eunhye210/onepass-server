@@ -1,7 +1,9 @@
 const User = require("../../models/User");
 
 const sendEmail = require("../../utils/sendEmail");
-const { createLowerUpperNumPassword } = require("../../services/createRandomPasswords");
+const {
+  createLowerUpperNumPassword,
+} = require("../../services/createRandomPasswords");
 
 const ERROR = require("../../constants/error");
 

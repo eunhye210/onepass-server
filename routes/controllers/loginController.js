@@ -26,10 +26,7 @@ module.exports = {
       const cookie = encodeURIComponent(M2);
       const sessionKey = server.getSessionKey();
 
-      await User.findOneAndUpdate(
-        { email },
-        { $push: { cookie: cookie }, $set: { sessionKey: sessionKey } }
-      );
+      await User.findOneAndUpdate({ email }, { $set: { cookie, sessionKey } });
 
       if (expireTime === "unlimited") {
         res.cookie("cookie", cookie);
@@ -70,7 +67,7 @@ module.exports = {
         JSON.stringify(privateState)
       );
 
-      res.status(200).json(JSON.stringify({ salt, B }));
+      res.status(200).json({ salt, B });
     } catch (err) {
       const error = new Error(ERROR.SERVER_ERROR);
       error.status = 500;
@@ -101,8 +98,7 @@ module.exports = {
     const user = await User.findOneAndUpdate(
       { email },
       {
-        $set: { oneTimePassword: "", sessionKey: OTP },
-        $push: { cookie: OTP },
+        $set: { oneTimePassword: "", cookie: OTP, sessionKey: OTP },
       }
     );
 

@@ -21,7 +21,7 @@ module.exports = {
     const result = passwordList.map((item) => {
       return {
         id: item._id,
-        url: item.name,
+        url: item.domainName,
         username: item.username,
       };
     });
@@ -42,7 +42,7 @@ module.exports = {
       throw Error;
     }
 
-    res.status(200).json("Your password has been successfully stored");
+    res.status(201).json("Your password has been successfully stored");
   },
   getPassword: async function (req, res, next) {
     const { userId, passwordId } = req.params;
@@ -157,7 +157,7 @@ module.exports = {
       const cipherText = encryptData(passwordData, sessionKey);
       res.status(200).json(cipherText);
     } else {
-      res.status(404).json({ errorMessage: "No Data Found" });
+      res.status(400).json({ errorMessage: ERROR.NO_DATA });
     }
   },
   createRandomPassword: async function (req, res, next) {

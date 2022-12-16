@@ -8,11 +8,11 @@ module.exports = {
     const { userId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(404).json({ errorMessage: ERROR.SERVER_ERROR });
+      return res.status(500).json({ errorMessage: ERROR.SERVER_ERROR });
     }
 
     await User.findByIdAndUpdate(userId, {
-      $set: { sessionKey: "", cookie: [] },
+      $set: { sessionKey: "", cookie: "" },
     });
 
     res.clearCookie("cookie");

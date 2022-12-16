@@ -21,8 +21,8 @@ async function saveEncryptedData(userId, userDataArr) {
         (await User.findByIdAndUpdate(userId, {
           $push: {
             passwordList: {
-              name: data.name,
               url: data.url ? data.url : data.name,
+              domainName: data.name,
               username: data.username,
               password: encryptedPassword,
             },

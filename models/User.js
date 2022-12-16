@@ -5,17 +5,17 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true },
   verifier: { type: String, required: true },
   privateKey: { type: String },
-  cookie: { type: Array },
+  cookie: { type: String },
   sessionKey: { type: String },
   oneTimePassword: { type: String },
   cookieExpire: { type: String, default: "3h" },
   passwordStrength: { type: String, default: "good" },
   passwordList: [
     {
-      url: { type: String },
-      name: { type: String },
-      username: { type: String },
-      password: { type: mongoose.Mixed },
+      url: { type: String, required: true },
+      domainName: { type: String, required: true },
+      username: { type: String, required: true },
+      password: { type: mongoose.Mixed, required: true },
     },
   ],
 });
@@ -27,7 +27,7 @@ userSchema.statics.updateUser = async function (
   setData
 ) {
   return await this.updateOne(
-    { field: fieldData },
+    { [field]: fieldData },
     { $set: { [setField]: setData } }
   );
 };

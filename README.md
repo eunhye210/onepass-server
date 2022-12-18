@@ -57,69 +57,6 @@ OnePass는 쉽고 안전한 로그인 서비스를 지원하는 비밀번호 관
   </table>
 </details>
 
-<details>
-  <summary>🗓 Project Schedule</summary>
-  <table width="600px">
-    <tr>
-      <th>1주차 ( 22.11.07 ~ 22.11.13 )</th>
-    </tr>
-    <tr>
-      <td>아이디어 확정, <a href="https://amenable-archeology-222.notion.site/DB-Schema-b38fc4354a684c37b09bcc4b047e8966">DB schema 설계</a>, <a href="https://amenable-archeology-222.notion.site/70af707279bc4063b9d7aefd60f71ec5?v=1a58fb648be04bd6b7f34d734ecfc1da">API 명세서 작성</a>, PoC 진행</td>
-    </tr>
-    <tr>
-     <th>2주차 ( 22.11.14 ~ 22.11.20 )</th>
-    </tr>
-    <tr>
-      <td>메인 기능 작업, Frontend / Backend 개발</td>
-    </tr>
-    <tr>
-      <th>3주차 ( 22.11.21 ~ 22.11.27 )</th>
-    </tr>
-    <tr>
-      <td>메인 기능 업그레이드, 배포(Netlify, AWS Elastic Beanstalk)</td>
-    </tr>
-  </table>
-</details>
-
-<details>
-  <summary>🗂 Stack</summary>
-  <table width="600px">
-    <tr>
-      <th colspan="2">Frontend</th>
-      <th colspan="2">Backend</th>
-    </tr>
-    <tr>
-      <td>React</td>
-      <td>v 18.2.0</td>
-      <td>Node.js</td>
-      <td>v 14.17.0</td>
-    </tr>
-    <tr>
-      <td>React-router-dom</td>
-      <td>v 6.4.3</td>
-      <td>Express</td>
-      <td>v 4.16.1</td>
-    </tr>
-    <tr>
-      <td>React-redux</td>
-      <td>v 8.0.5</td>
-      <td>MongoDB</td>
-      <td>v 3.6.3</td>
-    </tr>
-    <tr>
-      <td>thinbus-srp</td>
-      <td>v 1.8.0</td>
-      <td>thinbus-srp</td>
-      <td>v 1.8.0</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td>mongodb-client-encryption</td>
-      <td>v 1.2.1</td>
-    </tr>
-  </table>
-</details>
 
 <details>
   <summary>🔧 Installation</summary>
@@ -163,6 +100,66 @@ OnePass는 쉽고 안전한 로그인 서비스를 지원하는 비밀번호 관
     </tr>
   </table>
 </details>
+
+🗓 **Project Schedule**
+  <table width="600px">
+    <tr>
+      <th>1주차 ( 22.11.07 ~ 22.11.13 )</th>
+    </tr>
+    <tr>
+      <td>아이디어 확정, <a href="https://amenable-archeology-222.notion.site/DB-Schema-b38fc4354a684c37b09bcc4b047e8966">DB schema 설계</a>, <a href="https://amenable-archeology-222.notion.site/70af707279bc4063b9d7aefd60f71ec5?v=1a58fb648be04bd6b7f34d734ecfc1da">API 명세서 작성</a>, PoC 진행</td>
+    </tr>
+    <tr>
+     <th>2주차 ( 22.11.14 ~ 22.11.20 )</th>
+    </tr>
+    <tr>
+      <td>메인 기능 작업, Frontend / Backend 개발</td>
+    </tr>
+    <tr>
+      <th>3주차 ( 22.11.21 ~ 22.11.27 )</th>
+    </tr>
+    <tr>
+      <td>메인 기능 업그레이드, 배포(Netlify, AWS Elastic Beanstalk)</td>
+    </tr>
+  </table>
+
+🗂 **Stack**
+  <table width="600px">
+    <tr>
+      <th colspan="2">Frontend</th>
+      <th colspan="2">Backend</th>
+    </tr>
+    <tr>
+      <td>React</td>
+      <td>v 18.2.0</td>
+      <td>Node.js</td>
+      <td>v 14.17.0</td>
+    </tr>
+    <tr>
+      <td>React-router-dom</td>
+      <td>v 6.4.3</td>
+      <td>Express</td>
+      <td>v 4.16.1</td>
+    </tr>
+    <tr>
+      <td>React-redux</td>
+      <td>v 8.0.5</td>
+      <td>MongoDB</td>
+      <td>v 3.6.3</td>
+    </tr>
+    <tr>
+      <td>thinbus-srp</td>
+      <td>v 1.8.0</td>
+      <td>thinbus-srp</td>
+      <td>v 1.8.0</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td>mongodb-client-encryption</td>
+      <td>v 1.2.1</td>
+    </tr>
+  </table>
 
 <br />
 

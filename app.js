@@ -2,6 +2,8 @@ const path = require("path");
 const cors = require("cors");
 const logger = require("morgan");
 const express = require("express");
+const helmet = require("helmet");
+const csp = require("helmet-csp");
 const cookieParser = require("cookie-parser");
 
 const signupRouter = require("./routes/signup");
@@ -19,6 +21,13 @@ app.use(
   cors({
     origin: true,
     credentials: true,
+  })
+);
+app.use(
+  csp({
+    directives: {
+      scriptSrc: ["'self' 'sha256-efo1zdrJ23e4ryhKyrE+MSH4xOzGTdFpcjNnpGLVDfM='"],
+    }
   })
 );
 

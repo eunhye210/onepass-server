@@ -12,6 +12,7 @@ OnePass는 쉽고 안전한 로그인 서비스를 지원하는 비밀번호 관
 이러한 문제를 해결하고자 나만의 비밀번호 관리자, OnePass를 개발하게 되었습니다.
 
 [OnePass 바로가기](https://www.one-pass.co)<br />
+[OnePass 크롬 익스텐션 추가하기](https://chrome.google.com/webstore/detail/onepass/cckdnlfogifpeikbicpdofpkfalmpkhm?hl=ko&authuser=0)<br />
 [Client Repository 바로가기](https://github.com/eunhye210/onepass-client)<br />
 
 <br />
